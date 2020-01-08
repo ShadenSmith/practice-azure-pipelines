@@ -7,8 +7,7 @@ trigger:
 - master
 
 pool:
-  name: 'jeff-gpus'
-  #vmImage: 'ubuntu-latest'
+  name: 'GPU VMs'
 
 strategy:
   matrix:
