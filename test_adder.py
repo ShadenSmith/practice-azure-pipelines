@@ -1,6 +1,7 @@
 
 import unittest
 
+import torch
 import adder
 
 class TestAdder(unittest.TestCase):
@@ -15,6 +16,9 @@ class TestAdder(unittest.TestCase):
     def test_add3(self):
         result = adder.add3(1, 2, 3)
         self.assertTrue(result == 6)
+
+    def test_gpu(self):
+        self.assertTrue(torch.cuda.is_available())
 
 if __name__ == '__main__':
     unittest.main()
