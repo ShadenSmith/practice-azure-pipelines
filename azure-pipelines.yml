@@ -57,5 +57,5 @@ jobs:
 
   - script: |
       echo "RUNNING MODEL TESTS"
-    condition: eq($(runmodeltests), true)
+    condition: eq('$(runmodeltests)', true)
     displayName: "Model tests"
