@@ -1,14 +1,6 @@
 trigger:
 - master
 
-variables:
-  conda_root: ${HOME}/miniconda3
-
-parameters:
-  - name: run_model_tests
-    type: boolean
-    default: false
-
 jobs:
 - job: DeepSpeed
   timeoutInMinutes: 360
@@ -18,23 +10,28 @@ jobs:
   strategy:
     matrix:
       PyTorch12:
+        python.version: '3.6'
         cuda.version: '10.0'
         pytorch.version: '1.2'
-        python.version: '3.6'
         runmodeltests: false
       PyTorch15:
+        python.version: '3.7'
         cuda.version: '10.1'
         pytorch.version: '1.5'
-        python.version: '3.7'
         runmodeltests: true
+
+  variables:
+    conda_root: ${HOME}/miniconda3
+    #conda_env: 'ds_test_py$(python.version)_cuda$(cuda.version)_pytorch$(pytorch.version)'
+    conda_env: 'ds_test'
 
   steps:
     # Unfortunately nvidia's nvcc_linux-64=<version> seems to install 10.1 regardless?
     # Most of this complexity is a workaround to get the compiler toolchain to match the
     # cudatoolkit runtime
   - script: |
-      conda create --force --yes -n ds_test python=$(python.version) cudatoolkit=$(cuda.version)
-      source $(conda_root)/bin/activate $(conda_root)/envs/ds_test
+      conda create --force --yes $(conda_env) ds_test python=$(python.version) cudatoolkit=$(cuda.version)
+      source $(conda_root)/bin/activate $(conda_root)/envs/$(conda_env)
       conda install --yes conda
       conda install --yes -c conda-forge cudatoolkit-dev=$(cuda.version)
       conda install --yes gxx_linux-64
