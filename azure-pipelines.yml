@@ -21,7 +21,7 @@ jobs:
         runmodeltests: true
 
   variables:
-    conda_root: $HOME/miniconda3
+    conda_root: '$HOME/miniconda3'
     conda_env: 'ds_test_py$(python.version)_cuda$(cuda.version)_pytorch$(pytorch.version)'
     conda_env_path: '$HOME/miniconda3/envs/ds_test_py$(python.version)_cuda$(cuda.version)_pytorch$(pytorch.version)'
 
