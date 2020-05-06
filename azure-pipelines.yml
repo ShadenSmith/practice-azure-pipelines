@@ -22,10 +22,10 @@ steps:
 - script: |
     conda create --force --yes -n ds_test python=$(python.version) cudatoolkit=$(cuda.version)
     source activate ds_test
-    conda install conda
-    conda install -c conda-forge cudatoolkit-dev=$(cuda.version)
-    conda install gxx_linux-64
-    conda install -c pytorch --yes pytorch=$(pytorch.version)
+    conda install --yes conda
+    conda install --yes -c conda-forge cudatoolkit-dev=$(cuda.version)
+    conda install --yes gxx_linux-64
+    conda install --yes -c pytorch pytorch=$(pytorch.version)
     export CUDA_HOME=${HOME}/miniconda3/envs/ds_test/pkgs/cudatoolkit-dev
   displayName: 'Setup environment python=$(python.version) pytorch=$(pytorch.version) cuda=$(cuda.version)'
 
@@ -33,14 +33,15 @@ steps:
     source activate ds_test
     python -m pip install --upgrade pip
     pip install -r requirements.txt
+  displayName: "Install requirements"
 
 - script: |
     source activate ds_test
     nvcc --version
     python -c "import torch; print(torch.__version__)"
-  displayName: 'Test versions'
+  displayName: 'Test environment'
 
 - script: |
     pip install pytest pytest-azurepipelines
     pytest
-  displayName: 'pytest'
+  displayName: 'Unit tests'
