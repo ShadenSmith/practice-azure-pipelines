@@ -2,36 +2,45 @@ trigger:
 - master
 
 pool:
-  vmImage: 'Ubuntu-16.04'
+  name: 'DS_testing'
 
 strategy:
   matrix:
-    Python35:
-      python.version: '3.5'
-    Python36:
+    PyTorch12:
+      cuda.version: '10.0'
+      pytorch.version: '1.2'
       python.version: '3.6'
-    Python37:
+    PyTorch15:
+      cuda.version: '10.1'
+      pytorch.version: '1.5'
       python.version: '3.7'
 
 steps:
-- task: UsePythonVersion@0
-  inputs:
-    versionSpec: '$(python.version)'
-    addToPath: true
-    architecture: 'x64'
-  displayName: 'Use Python $(python.version)'
+  # Unfortunately nvidia's nvcc_linux-64=<version> seems to install 10.1 regardless?
+  # Most of this complexity is a workaround to get the compiler toolchain to match the
+  # cudatoolkit runtime
+- script: |
+    conda create --force --yes -n ds_test python=$(python.version) cudatoolkit=$(cuda.version)
+    conda activate ds_test
+    conda install conda
+    conda install -c conda-forge cudatoolkit-dev=$(cuda.version)
+    conda install gxx_linux-64
+    conda install -c pytorch --yes pytorch=$(pytorch.version)
+    export CUDA_HOME=${HOME}/miniconda3/envs/ds_test/pkgs/cudatoolkit-dev
+  displayName: 'Setup environment python=$(python.version) pytorch=$(pytorch.version) cuda=$(cuda.version)'
 
 - script: |
+    conda activate ds_test
     python -m pip install --upgrade pip
     pip install -r requirements.txt
-  displayName: 'Install dependencies'
+
+- script: |
+    conda activate ds_test
+    nvcc --version
+    python -c "import torch; print(torch.__version__)"
+  displayName: 'Test versions'
 
 - script: |
     pip install pytest pytest-azurepipelines
     pytest
   displayName: 'pytest'
-
-- task: PublishPipelineArtifact@1
-  inputs:
-    targetPath: '$(Build.SourcesDirectory)/logs/'
-    artifactName: TestLogs
