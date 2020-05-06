@@ -23,39 +23,39 @@ jobs:
         python.version: '3.7'
         runmodeltests: true
 
-    steps:
+  steps:
     # Unfortunately nvidia's nvcc_linux-64=<version> seems to install 10.1 regardless?
     # Most of this complexity is a workaround to get the compiler toolchain to match the
     # cudatoolkit runtime
-    - script: |
-        conda create --force --yes -n ds_test python=$(python.version) cudatoolkit=$(cuda.version)
-        source $(conda_root)/bin/activate $(conda_root)/envs/ds_test
-        conda install --yes conda
-        conda install --yes -c conda-forge cudatoolkit-dev=$(cuda.version)
-        conda install --yes gxx_linux-64
-        conda install --yes -c pytorch pytorch=$(pytorch.version)
-        export CUDA_HOME=$(conda_root)/envs/ds_test/pkgs/cudatoolkit-dev
-      displayName: 'Setup environment python=$(python.version) pytorch=$(pytorch.version) cuda=$(cuda.version)'
+  - script: |
+      conda create --force --yes -n ds_test python=$(python.version) cudatoolkit=$(cuda.version)
+      source $(conda_root)/bin/activate $(conda_root)/envs/ds_test
+      conda install --yes conda
+      conda install --yes -c conda-forge cudatoolkit-dev=$(cuda.version)
+      conda install --yes gxx_linux-64
+      conda install --yes -c pytorch pytorch=$(pytorch.version)
+      export CUDA_HOME=$(conda_root)/envs/ds_test/pkgs/cudatoolkit-dev
+    displayName: 'Setup environment python=$(python.version) pytorch=$(pytorch.version) cuda=$(cuda.version)'
 
-    - script: |
-        source $(conda_root)/bin/activate $(conda_root)/envs/ds_test
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
-      displayName: "Install requirements"
+  - script: |
+      source $(conda_root)/bin/activate $(conda_root)/envs/ds_test
+      python -m pip install --upgrade pip
+      pip install -r requirements.txt
+    displayName: "Install requirements"
 
-    - script: |
-        source $(conda_root)/bin/activate $(conda_root)/envs/ds_test
-        nvcc --version
-        python -c "import torch; print(torch.__version__)"
-      displayName: 'Show environment'
+  - script: |
+      source $(conda_root)/bin/activate $(conda_root)/envs/ds_test
+      nvcc --version
+      python -c "import torch; print(torch.__version__)"
+    displayName: 'Show environment'
 
-    - script: |
-        source $(conda_root)/bin/activate $(conda_root)/envs/ds_test
-        pip install pytest pytest-azurepipelines
-        pytest
-      displayName: 'Unit tests'
+  - script: |
+      source $(conda_root)/bin/activate $(conda_root)/envs/ds_test
+      pip install pytest pytest-azurepipelines
+      pytest
+    displayName: 'Unit tests'
 
-    - script: |
-        echo "RUNNING MODEL TESTS"
-      condition: eq($(runmodeltests), true)
-      displayName: "Model tests"
+  - script: |
+      echo "RUNNING MODEL TESTS"
+    condition: eq($(runmodeltests), true)
+    displayName: "Model tests"
