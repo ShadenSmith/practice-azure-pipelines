@@ -30,12 +30,12 @@ jobs:
     # Most of this complexity is a workaround to get the compiler toolchain to match the
     # cudatoolkit runtime
   - script: |
-      conda create --force --yes -n $(conda_env) python=$(python.version)
+      conda create --force --yes -n $(conda_env) python=$(python.version) cudatoolkit=$(cuda.version)
       source $(conda_root)/bin/activate $(conda_root)/envs/$(conda_env)
       conda install --yes conda
       conda install --yes -c conda-forge cudatoolkit-dev=$(cuda.version)
       conda install --yes gxx_linux-64
-      conda install --yes -c pytorch pytorch=$(pytorch.version)
+      conda install --yes -c pytorch pytorch=$(pytorch.version) cudatoolkit=$(cuda.version)
     displayName: 'Setup environment python=$(python.version) pytorch=$(pytorch.version) cuda=$(cuda.version)'
 
   - script: |
