@@ -2,7 +2,7 @@ trigger:
 - master
 
 jobs:
-- job: DeepSpeed
+- job: DeepSpeed Tests
   timeoutInMinutes: 360
   pool:
     name: 'DS_testing'
@@ -41,10 +41,10 @@ jobs:
       conda install --yes -c conda-forge cudatoolkit-dev=$(cuda.version)
       conda install --yes gxx_linux-64
       conda install --yes -c pytorch pytorch=$(pytorch.version) cudatoolkit=$(cuda.version)
+      source $(conda_root)/bin/activate $(conda_env_path)
     displayName: 'Setup environment python=$(python.version) pytorch=$(pytorch.version) cuda=$(cuda.version)'
 
   - script: |
-      source $(conda_root)/bin/activate $(conda_env_path)
       git clone https://www.github.com/microsoft/DeepSpeed.git
       pushd DeepSpeed
       ./install.sh
@@ -54,19 +54,16 @@ jobs:
     displayName: "Installing DeepSpeed"
 
   - script: |
-      source $(conda_root)/bin/activate $(conda_root)/envs/$(conda_env)
       python -m pip install --upgrade pip
       pip install -r requirements.txt
     displayName: "Install requirements"
 
   - script: |
-      source $(conda_root)/bin/activate $(conda_root)/envs/$(conda_env)
       nvcc --version
       python -c "import torch; print(torch.__version__)"
     displayName: 'Show environment'
 
   - script: |
-      source $(conda_root)/bin/activate $(conda_root)/envs/$(conda_env)
       pip install pytest pytest-azurepipelines
       pytest test_adder.py
     displayName: 'Unit tests'
