@@ -51,16 +51,16 @@ stages:
         displayName: 'Show environment'
 
 - stage: UnitTests
-    - job: UnitTests
-      steps:
-      - script: |
-          source $(conda_root)/bin/activate $(conda_root)/envs/ds_test
-          pip install pytest pytest-azurepipelines
-          pytest
-        displayName: 'Unit tests'
+  steps:
+  - script: |
+      source $(conda_root)/bin/activate $(conda_root)/envs/ds_test
+      pip install pytest pytest-azurepipelines
+      pytest
+    displayName: 'Unit tests'
 
 - stage: ModelTests
-    - job: ModelTests
+  jobs:
+    - job: ModelTest1
       timeoutInMinutes: 360
       condition: eq($(runmodeltests), true)
       - script: |
