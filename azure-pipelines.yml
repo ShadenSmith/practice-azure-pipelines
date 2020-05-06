@@ -62,5 +62,5 @@ jobs:
 
   - script: |
       echo "RUNNING MODEL TESTS"
-    condition: $[ eq($(pytorch.version), '1.5') ]
+    condition: $[ eq("$(pytorch.version)", '1.5') ]
     displayName: "Model tests"
