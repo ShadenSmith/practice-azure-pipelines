@@ -55,7 +55,7 @@ jobs:
       pytest
     displayName: 'Unit tests'
 
-  - ${{ if eq('$(pytorch.version), '1.5') }}:
-    - script: |
-        echo "RUNNING MODEL TESTS"
-      displayName: "Model tests"
+  - script: |
+      echo "RUNNING MODEL TESTS"
+    condition: eq('$(pytorch.version)', '1.5')
+    displayName: "Model tests"
