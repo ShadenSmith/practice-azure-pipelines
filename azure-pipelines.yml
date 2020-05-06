@@ -29,13 +29,12 @@ jobs:
     # Most of this complexity is a workaround to get the compiler toolchain to match the
     # cudatoolkit runtime
   - script: |
-      conda create --force --yes $(conda_env) ds_test python=$(python.version) cudatoolkit=$(cuda.version)
+      conda create --force --yes $(conda_env) $(conda_env) python=$(python.version) cudatoolkit=$(cuda.version)
       source $(conda_root)/bin/activate $(conda_root)/envs/$(conda_env)
       conda install --yes conda
       conda install --yes -c conda-forge cudatoolkit-dev=$(cuda.version)
       conda install --yes gxx_linux-64
       conda install --yes -c pytorch pytorch=$(pytorch.version)
-      export CUDA_HOME=$(conda_root)/envs/ds_test/pkgs/cudatoolkit-dev
     displayName: 'Setup environment python=$(python.version) pytorch=$(pytorch.version) cuda=$(cuda.version)'
 
   - script: |
@@ -43,6 +42,8 @@ jobs:
       git clone https://www.github.com/microsoft/DeepSpeed.git
       cd DeepSpeed
       ./install.sh
+    env:
+      CUDA_HOME: "$(conda_root)/envs/$(conda_env)/pkgs/cudatoolkit-dev"
     displayName: "Installing DeepSpeed"
 
   - script: |
