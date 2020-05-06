@@ -2,7 +2,7 @@ trigger:
 - master
 
 jobs:
-- job: DeepSpeed Tests
+- job: DeepSpeed_Tests
   timeoutInMinutes: 360
   pool:
     name: 'DS_testing'
