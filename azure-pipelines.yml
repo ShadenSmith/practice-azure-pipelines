@@ -36,15 +36,15 @@ jobs:
     # cudatoolkit runtime
   - script: |
       conda create --force --yes -n $(conda_env) python=$(python.version) cudatoolkit=$(cuda.version)
-      source $(conda_root)/bin/activate $(conda_root)/envs/$(conda_env)
+      source $(conda_root)/bin/activate $(conda_env_path)
       conda install --yes conda
       conda install --yes -c conda-forge cudatoolkit-dev=$(cuda.version)
       conda install --yes gxx_linux-64
       conda install --yes -c pytorch pytorch=$(pytorch.version) cudatoolkit=$(cuda.version)
-      source $(conda_root)/bin/activate $(conda_env_path)
     displayName: 'Setup environment python=$(python.version) pytorch=$(pytorch.version) cuda=$(cuda.version)'
 
   - script: |
+      source $(conda_root)/bin/activate $(conda_env_path)
       git clone https://www.github.com/microsoft/DeepSpeed.git
       pushd DeepSpeed
       ./install.sh
@@ -54,21 +54,25 @@ jobs:
     displayName: "Installing DeepSpeed"
 
   - script: |
+      source $(conda_root)/bin/activate $(conda_env_path)
       python -m pip install --upgrade pip
       pip install -r requirements.txt
     displayName: "Install requirements"
 
   - script: |
+      source $(conda_root)/bin/activate $(conda_env_path)
       nvcc --version
       python -c "import torch; print(torch.__version__)"
     displayName: 'Show environment'
 
   - script: |
+      source $(conda_root)/bin/activate $(conda_env_path)
       pip install pytest pytest-azurepipelines
       pytest test_adder.py
     displayName: 'Unit tests'
 
   - script: |
+      source $(conda_root)/bin/activate $(conda_env_path)
       echo "RUNNING MODEL TESTS"
     condition: eq(variables['runmodeltests'], true)
     displayName: "Model tests"
