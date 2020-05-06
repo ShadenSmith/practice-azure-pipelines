@@ -23,7 +23,6 @@ jobs:
   variables:
     conda_root: '/home/deepspeed/miniconda3'
     conda_env: 'ds_test_py$(python.version)_cuda$(cuda.version)_pytorch$(pytorch.version)'
-    #conda_env_path: '$HOME/miniconda3/envs/ds_test_py$(python.version)_cuda$(cuda.version)_pytorch$(pytorch.version)'
     conda_env_path: '$(conda_root)/envs/$(conda_env)'
 
   steps:
@@ -40,10 +39,11 @@ jobs:
     displayName: 'Setup environment python=$(python.version) pytorch=$(pytorch.version) cuda=$(cuda.version)'
 
   - script: |
-      source $(conda_root)/bin/activate $(conda_root)/envs/$(conda_env)
+      source $(conda_root)/bin/activate $(conda_env_path)
       git clone https://www.github.com/microsoft/DeepSpeed.git
-      cd DeepSpeed
+      pushd DeepSpeed
       ./install.sh
+      popd
     env:
       CUDA_HOME: $(conda_env_path)/pkgs/cudatoolkit-dev
     displayName: "Installing DeepSpeed"
