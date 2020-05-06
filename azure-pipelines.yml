@@ -40,8 +40,8 @@ jobs:
 
   - script: |
       source $(conda_root)/bin/activate $(conda_env_path)
-      git clone https://www.github.com/microsoft/DeepSpeed.git
       pushd DeepSpeed
+      git clone https://www.github.com/microsoft/DeepSpeed.git
       ./install.sh
       popd
     env:
@@ -63,7 +63,7 @@ jobs:
   - script: |
       source $(conda_root)/bin/activate $(conda_root)/envs/$(conda_env)
       pip install pytest pytest-azurepipelines
-      pytest
+      pytest test_adder.py
     displayName: 'Unit tests'
 
   - script: |
