@@ -62,5 +62,7 @@ stages:
   jobs:
     - job: ModelTest1
       timeoutInMinutes: 360
+      condition: eq($(runmodeltests), true)
+      steps:
       - script: |
         echo "RUNNING MODEL TESTS"
