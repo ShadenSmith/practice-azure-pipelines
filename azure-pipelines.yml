@@ -17,11 +17,11 @@ jobs:
 
   strategy:
     matrix:
-      #PyTorch12:
-      #  cuda.version: '10.0'
-      #  pytorch.version: '1.2'
-      #  python.version: '3.6'
-      #  runmodeltests: false
+      PyTorch12:
+        cuda.version: '10.0'
+        pytorch.version: '1.2'
+        python.version: '3.6'
+        runmodeltests: false
       PyTorch15:
         cuda.version: '10.1'
         pytorch.version: '1.5'
@@ -62,5 +62,5 @@ jobs:
 
   - script: |
       echo "RUNNING MODEL TESTS"
-    condition: eq(variables['pytorch.version'], '1.5')
+    condition: eq(variables['runmodeltests'], true)
     displayName: "Model tests"
