@@ -57,12 +57,3 @@ stages:
       pip install pytest pytest-azurepipelines
       pytest
     displayName: 'Unit tests'
-
-- stage: ModelTests
-  jobs:
-    - job: ModelTest1
-      timeoutInMinutes: 360
-      condition: eq($(runmodeltests), true)
-      steps:
-      - script: |
-        echo "RUNNING MODEL TESTS"
