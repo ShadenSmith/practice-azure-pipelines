@@ -21,7 +21,7 @@ steps:
   # cudatoolkit runtime
 - script: |
     conda create --force --yes -n ds_test python=$(python.version) cudatoolkit=$(cuda.version)
-    conda activate ds_test
+    source activate ds_test
     conda install conda
     conda install -c conda-forge cudatoolkit-dev=$(cuda.version)
     conda install gxx_linux-64
@@ -30,12 +30,12 @@ steps:
   displayName: 'Setup environment python=$(python.version) pytorch=$(pytorch.version) cuda=$(cuda.version)'
 
 - script: |
-    conda activate ds_test
+    source activate ds_test
     python -m pip install --upgrade pip
     pip install -r requirements.txt
 
 - script: |
-    conda activate ds_test
+    source activate ds_test
     nvcc --version
     python -c "import torch; print(torch.__version__)"
   displayName: 'Test versions'
