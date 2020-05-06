@@ -4,6 +4,11 @@ trigger:
 variables:
   conda_root: ${HOME}/miniconda3
 
+parameters:
+  - name: run_model_tests
+    type: boolean
+    default: false
+
 jobs:
 - job: DeepSpeed
   timeoutInMinutes: 360
@@ -12,11 +17,11 @@ jobs:
 
   strategy:
     matrix:
-      PyTorch12:
-        cuda.version: '10.0'
-        pytorch.version: '1.2'
-        python.version: '3.6'
-        runmodeltests: false
+      #PyTorch12:
+      #  cuda.version: '10.0'
+      #  pytorch.version: '1.2'
+      #  python.version: '3.6'
+      #  runmodeltests: false
       PyTorch15:
         cuda.version: '10.1'
         pytorch.version: '1.5'
@@ -57,5 +62,5 @@ jobs:
 
   - script: |
       echo "RUNNING MODEL TESTS"
-    condition: eq(pytorch.version, '1.5')
+    condition: $[ eq($(pytorch.version), '1.5') ]
     displayName: "Model tests"
