@@ -23,13 +23,14 @@ jobs:
   variables:
     conda_root: $HOME/miniconda3
     conda_env: 'ds_test_py$(python.version)_cuda$(cuda.version)_pytorch$(pytorch.version)'
+    conda_env_path: '$HOME/miniconda3/envs/ds_test_py$(python.version)_cuda$(cuda.version)_pytorch$(pytorch.version)'
 
   steps:
     # Unfortunately nvidia's nvcc_linux-64=<version> seems to install 10.1 regardless?
     # Most of this complexity is a workaround to get the compiler toolchain to match the
     # cudatoolkit runtime
   - script: |
-      conda create --force --yes -n $(conda_env) python=$(python.version) cudatoolkit=$(cuda.version)
+      conda create --force --yes -n $(conda_env) python=$(python.version)
       source $(conda_root)/bin/activate $(conda_root)/envs/$(conda_env)
       conda install --yes conda
       conda install --yes -c conda-forge cudatoolkit-dev=$(cuda.version)
@@ -43,7 +44,7 @@ jobs:
       cd DeepSpeed
       ./install.sh
     env:
-      CUDA_HOME: "$(conda_root)/envs/$(conda_env)/pkgs/cudatoolkit-dev"
+      CUDA_HOME: $(conda_env_path)/pkgs/cudatoolkit-dev
     displayName: "Installing DeepSpeed"
 
   - script: |
